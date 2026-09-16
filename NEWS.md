@@ -1,3 +1,28 @@
+# coinclp 0.1.1
+
+* CRAN's valgrind run reported uninitialised bytes written to a file from
+  `clp_save_model()`. The bytes are the trailing padding of a struct that
+  Clp's own `saveModel()` writes whole (`ClpSimplex.cpp`, `Clp_scalars`),
+  so the report comes from inside the Clp library and is harmless, but it
+  cannot be silenced from R. The snapshot round trip is therefore no longer
+  exercised in CRAN's checks: the example on the `clp_save_model` help page
+  is marked not to run, and the corresponding test runs only where
+  `NOT_CRAN` is set, as it is on the package's continuous integration. The
+  functions themselves are unchanged, and the help page explains the
+  finding for anyone who runs valgrind themselves.
+* `src/Makevars.win` now honours the `CLP_CFLAGS` and `CLP_LIBS`
+  environment variables, so a Clp installed outside the Rtools tree can be
+  built against on Windows too. They take precedence over pkg-config, which
+  in turn precedes the Rtools library tree, matching the order `configure`
+  uses on Unix.
+* The claim that Rtools ships Clp is now stated as what has been verified
+  (Rtools 4.5, with 4.3 and 4.4 using the same library tree) rather than as
+  a blanket one. Rtools 4.2 and earlier do not carry Clp, so source builds
+  on R 4.2 or older need `CLP_CFLAGS` and `CLP_LIBS`.
+* README says what a Windows user actually needs: nothing at all for a CRAN
+  binary, since Clp is static and ends up inside `coinclp.dll`; Rtools only
+  for a source build.
+
 # coinclp 0.1.0
 
 * First release.

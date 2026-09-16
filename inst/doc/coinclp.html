@@ -397,7 +397,10 @@ bounded on both sides, give <code>row_lower</code> and
 <h3>Sparse input</h3>
 <p>Real models are sparse. Any of a <code>Matrix</code> sparse matrix, a
 <code>slam::simple_triplet_matrix</code> or plain triplets can be passed
-straight in; nothing is densified on the way to the solver.</p>
+straight in. A sparse matrix goes to Clp as sparse: only the non-zero
+entries are passed, and the matrix is never expanded into a full grid of
+mostly zeros first, which for a large model is the difference between
+fitting in memory and not.</p>
 <div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">1</span>)</span>
 <span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>big <span class="ot">&lt;-</span> Matrix<span class="sc">::</span><span class="fu">rsparsematrix</span>(<span class="dv">200</span>, <span class="dv">500</span>, <span class="at">density =</span> <span class="fl">0.01</span>)</span>
 <span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>res <span class="ot">&lt;-</span> <span class="fu">clp_solve</span>(<span class="fu">rep</span>(<span class="dv">1</span>, <span class="dv">500</span>), big, <span class="st">&quot;&gt;=&quot;</span>, <span class="fu">rep</span>(<span class="sc">-</span><span class="dv">1</span>, <span class="dv">200</span>), <span class="at">lower =</span> <span class="dv">0</span>, <span class="at">upper =</span> <span class="dv">10</span>)</span>
